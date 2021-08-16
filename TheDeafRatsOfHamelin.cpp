@@ -21,10 +21,93 @@
 #include <iostream>
 
 
+int countDeafRats(const std::string& town)
+{
+	int reponse = 0; 
+
+	std::string piedPiper = town;
+	int longueur = piedPiper.length(); 
+	
+	int compteur = 0; 
+	std::string indice = "";
+
+	int position = 0; 
+
+	while (compteur < longueur)
+	{
+		
+		indice = piedPiper[compteur];
+
+		if (indice == "P")
+		{
+			position = compteur; 
+			compteur = longueur - 1;
+		}
+			
+		compteur++; 
+	}
+
+	// After the pied piper 
+	for (int i = position; i < piedPiper.size(); i++)
+	{
+		std::string ratHead = "";
+		std::string ratTail = ""; 
+		std::string beforeRat = ""; 
+		
+		ratHead = piedPiper[i];
+		ratTail = piedPiper[i + 1];
+		
+
+		if (ratHead == "~" && ratTail == "O")
+		{
+			beforeRat = piedPiper[i - 1];
+			if (beforeRat == "~" or beforeRat == " " or beforeRat == "P" or beforeRat == "O")
+				reponse++; 
+		}
+			
+	}
+
+	// Before the pied piper 
+	for (int i = position; i != position; i--)
+	{
+		std::string ratHead = "";
+		std::string ratTail = "";
+		std::string beforeRat = "";
+
+		ratHead = piedPiper[i];
+		ratTail = piedPiper[i + 1];
+
+
+		if (ratHead == "~" && ratTail == "O")
+		{
+			beforeRat = piedPiper[i - 1];
+			if (beforeRat == "~" or beforeRat == " ")
+				reponse++;
+		}
+	}
+
+
+
+	return reponse;
+}
+
+
+
+
+
+
 
 int main()
 {
-	std::cout << "Hello world" << std::endl; 
+	
+	std::string test = "P O~ O~ ~O O~"; // 1 deaf rat 
+	std::string test_1 = "~O~O~O~OP~O~OO~"; // 2 deaf rats
+	std::string test_2 = "P  O~O~O~  ~O  O~O~O~  O~O~O~O~O~O~~OO~O~O~~OO~O~O~O~O~O~O~O~O~O~O~O~O~~OO~O~"; // 4 deaf rats 
+
+	//std::cout << countDeafRats(test) << std::endl; 
+	std::cout << countDeafRats(test_1) << std::endl;
+	//std::cout << countDeafRats(test_2) << std::endl; 
+
 
 	return 0; 
 }
