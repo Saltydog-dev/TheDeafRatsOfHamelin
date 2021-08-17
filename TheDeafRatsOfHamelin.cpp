@@ -19,95 +19,106 @@
 */
 
 #include <iostream>
-
+#include <vector>
 
 int countDeafRats(const std::string& town)
 {
-	int reponse = 0; 
+	int answer = 0;
+	std::string newTown = town; 
 
-	std::string piedPiper = town;
-	int longueur = piedPiper.length(); 
-	
-	int compteur = 0; 
-	std::string indice = "";
+	int townLength = newTown.length(); 
+	int counter = 0; 
+	std::string rats = "";
+	std::string piedPiper = "";
 
-	int position = 0; 
-
-	while (compteur < longueur)
+	// Delete the space 
+	while (counter < townLength)
 	{
-		
-		indice = piedPiper[compteur];
+		rats = newTown[counter];
+		if (rats != " ")
+			piedPiper += rats;
+		counter++; 
+	}
 
+	int piedPiperLength = piedPiper.length(); 
+	counter = 0; 
+
+	// Find the position of the " P "
+	std::string indice = "";
+	int position = 0;
+
+	while (counter < piedPiperLength)
+	{
+		indice = piedPiper[counter];
 		if (indice == "P")
 		{
-			position = compteur; 
-			compteur = longueur - 1;
+			position = counter;
+			counter = piedPiperLength - 1;
 		}
-			
-		compteur++; 
+		counter++;
 	}
+
+	int positionP = position; 
 
 	// After the pied piper 
-	for (int i = position; i < piedPiper.size(); i++)
-	{
-		std::string ratHead = "";
-		std::string ratTail = ""; 
-		std::string beforeRat = ""; 
-		
-		ratHead = piedPiper[i];
-		ratTail = piedPiper[i + 1];
-		
+	std::vector<std::string> myRats; 
+	position += 1; 
 
-		if (ratHead == "~" && ratTail == "O")
-		{
-			beforeRat = piedPiper[i - 1];
-			if (beforeRat == "~" or beforeRat == " " or beforeRat == "P" or beforeRat == "O")
-				reponse++; 
-		}
-			
+	for (size_t i = position; i < piedPiper.size(); i+=2)
+	{
+		rats = piedPiper[i];
+		rats += piedPiper[i + 1];
+		myRats.push_back(rats);
+		rats = ""; 
 	}
 
-	// Before the pied piper 
-	for (int i = position; i != position; i--)
+	// Find the right rats 
+	for (auto it = myRats.begin(); it != myRats.end(); ++it)
 	{
-		std::string ratHead = "";
-		std::string ratTail = "";
-		std::string beforeRat = "";
-
-		ratHead = piedPiper[i];
-		ratTail = piedPiper[i + 1];
-
-
-		if (ratHead == "~" && ratTail == "O")
-		{
-			beforeRat = piedPiper[i - 1];
-			if (beforeRat == "~" or beforeRat == " ")
-				reponse++;
-		}
+		if (*it == "~O")
+			answer++; 
 	}
 
+	myRats.clear();
+	
+	if (positionP != 0)
+	{
+		// Before the pied piper 
+		for (size_t i = 0; i != positionP; i+=2)
+		{
+			rats = piedPiper[i];
+			rats += piedPiper[i + 1];
+			myRats.push_back(rats);
+			rats = "";
+		}
 
+		// Find the left rats 
+		for (auto it = myRats.begin(); it != myRats.end(); ++it)
+		{
+			if (*it == "O~")
+				answer++;
+		}
+	};
 
-	return reponse;
+	return answer;
 }
 
 
-
-
-
-
-
+// Algorithm Test 
 int main()
 {
+	std::string test_0 = "P O~ O~ O~ O~"; // 0 deaf rat
+	std::string test_1 = "P O~ O~ ~O O~"; // 1 deaf rat 
+	std::string test_2 = "~O~O~O~OP~O~OO~"; // 2 deaf rats
+	std::string test_3 = "~OO~~O~OP~O~OO~"; // 3 deaf rats 
+	std::string test_4 = "P  O~O~O~  ~O  O~O~O~  O~O~O~O~O~O~~OO~O~O~~OO~O~O~O~O~O~O~O~O~O~O~O~O~~OO~O~"; // 4 deaf rats 
 	
-	std::string test = "P O~ O~ ~O O~"; // 1 deaf rat 
-	std::string test_1 = "~O~O~O~OP~O~OO~"; // 2 deaf rats
-	std::string test_2 = "P  O~O~O~  ~O  O~O~O~  O~O~O~O~O~O~~OO~O~O~~OO~O~O~O~O~O~O~O~O~O~O~O~O~~OO~O~"; // 4 deaf rats 
-
-	//std::cout << countDeafRats(test) << std::endl; 
-	std::cout << countDeafRats(test_1) << std::endl;
-	//std::cout << countDeafRats(test_2) << std::endl; 
-
+	
+	std::cout << countDeafRats(test_0) << std::endl; 
+	std::cout << countDeafRats(test_1) << std::endl; 
+	std::cout << countDeafRats(test_2) << std::endl; 
+	std::cout << countDeafRats(test_3) << std::endl; 
+	std::cout << countDeafRats(test_4) << std::endl; 
 
 	return 0; 
 }
